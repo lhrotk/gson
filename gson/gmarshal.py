@@ -2,7 +2,6 @@ import importlib
 import inspect
 import json
 import logging
-import sys
 from typing import (Any, Dict, ForwardRef, List, Tuple, Type, TypeVar,
                     get_args, get_origin)
 
@@ -152,8 +151,8 @@ def _unmarshal(some_json: Dict[str, Any],
                 continue
             res, _ = _unmarshal(some_json.get(k), val_type, ref_cls_module,
                                 keys + [k])
-        if res:
-            o[k] = res
+            if res:
+                o[k] = res
         return o
 
     if nested_cls is not None:
