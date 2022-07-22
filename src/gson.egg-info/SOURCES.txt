@@ -1,0 +1,10 @@
+LICENSE
+README.md
+pyproject.toml
+src/decorators/safe_run.py
+src/gson/__init__.py
+src/gson/gmarshal.py
+src/gson.egg-info/PKG-INFO
+src/gson.egg-info/SOURCES.txt
+src/gson.egg-info/dependency_links.txt
+src/gson.egg-info/top_level.txt

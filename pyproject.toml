@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gson"
+version = "0.0.1"
+authors = [
+  { name="Cruise Li", email="lhrotk@gmail.com" },
+]
+description = "Json Encode/Decoder in Golang Style"
+readme = "README.md"
+license = { file="LICENSE" }
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/lhrotk/gson"
+"Bug Tracker" = "https://github.com/lhrotk/gson/issues"
