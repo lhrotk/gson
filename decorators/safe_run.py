@@ -1,7 +1,7 @@
-from distutils.log import error
+from logging import Logger
 
 
-def safe_run(logger=None):
+def safe_run(logger: Logger = None):
     def wrapper(func):
         def inner(*arg, **kwargs):
             try:
