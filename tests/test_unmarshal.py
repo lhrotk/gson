@@ -9,11 +9,13 @@ class TestMarshal(unittest.TestCase):
     expected_json_str = '{"name": "Tom", "age": 18, "school": {"address": "18E Ave", "zipcode": "Q1W2E3"}, "teacher": {"age": 29, "name": "Bob", "discipline": "History"}, "room_mates": [{"name": "Shirley", "age": 18}]}'
 
     def test_marshal(self):
-        tom = Student('Tom',
-                      18,
-                      School('18E Ave', 'Q1W2E3'),
-                      Teacher(29, 'Bob', 'History'),
-                      room_mates=[Student('Shirley', 18)])
+        tom = Student(
+            "Tom",
+            18,
+            School("18E Ave", "Q1W2E3"),
+            Teacher(29, "Bob", "History"),
+            room_mates=[Student("Shirley", 18)],
+        )
 
         res = marshal(tom)
         self.assertEqual(res, self.expected_json_str)

@@ -2,8 +2,17 @@ import importlib
 import inspect
 import json
 import logging
-from typing import (Any, Dict, ForwardRef, List, Tuple, Type, TypeVar,
-                    get_args, get_origin)
+from typing import (
+    Any,
+    Dict,
+    ForwardRef,
+    List,
+    Tuple,
+    Type,
+    TypeVar,
+    get_args,
+    get_origin,
+)
 
 from decorators.safe_run import safe_run
 
@@ -43,7 +52,7 @@ def marshal(obj, omit_empty=True) -> str:
 
 
 def obj_to_dict(obj, omit_empty=True):
-    """Convert any object to dict. You can customize how one class should be converted to dict by 
+    """Convert any object to dict. You can customize how one class should be converted to dict by
     implement object_to_dict method under the class
     def object_to_dict() -> dict
 
@@ -62,14 +71,13 @@ def obj_to_dict(obj, omit_empty=True):
         return res
     elif getattr(obj, "obj_to_dict", None):
         return obj.obj_to_dict()
-    elif hasattr(obj, '__dict__'):
+    elif hasattr(obj, "__dict__"):
         res = {}
         for k in obj.__dict__.keys():
             if not is_empty(obj.__dict__[k]) or not omit_empty:
                 res[k] = obj_to_dict(obj.__dict__[k])
         return res
-    elif isinstance(obj, list) or isinstance(obj, tuple) or isinstance(
-            obj, set):
+    elif isinstance(obj, list) or isinstance(obj, tuple) or isinstance(obj, set):
         res = []
         for x in obj:
             if not is_empty(x) or not omit_empty:
@@ -85,18 +93,44 @@ def is_empty(obj):
     return False
 
 
+def to_legal_json_key(input: str) -> str:
+    """
+    convert my-info to my_info, since - is not legal json key
+
+    Returns:
+        str: converted key
+    """
+    if type(input) == str:
+        return input.replace("-", "_")
+    return input
+
+
+def process_dict_key_to_be_legal(some_json: Dict[str, Any]):
+    if not type(some_json) == dict:
+        return
+    for k in list(some_json.keys()):
+        legal_k = to_legal_json_key(k)
+        if legal_k != k:
+            some_json[legal_k] = some_json[k]
+            del some_json[k]
+    for k in list(some_json.keys()):
+        process_dict_key_to_be_legal(some_json[k])
+
+
 @safe_run(logger=logger)
-def _unmarshal(some_json: Dict[str, Any],
-               some_cls: Type,
-               ref_cls_module: str = '',
-               keys: List[str] = []):
+def _unmarshal(
+    some_json: Dict[str, Any],
+    some_cls: Type,
+    ref_cls_module: str = "",
+    keys: List[str] = [],
+):
     """
     Construct instance of given type from json dict. Allowed class variable includes:
-    1. primitive 
+    1. primitive
     2. list tuple set
     3. another allowed class
     This is done by analyzing __init__ function of given class. You must write type hints for each function args
-    you want to read from the dict. Giving no default value to an argument will cause reflection failure if the 
+    you want to read from the dict. Giving no default value to an argument will cause reflection failure if the
     key doesn't exists in dict
 
 
@@ -133,7 +167,7 @@ def _unmarshal(some_json: Dict[str, Any],
                     if nested_cls == list:
                         o.append(res)
                     elif nested_cls == tuple:
-                        o = (res, )
+                        o = (res,)
                     elif nested_cls == set:
                         o.add(res)
             return o
@@ -149,14 +183,13 @@ def _unmarshal(some_json: Dict[str, Any],
         for k in some_json.keys():
             if not isinstance(k, str):
                 continue
-            res, _ = _unmarshal(some_json.get(k), val_type, ref_cls_module,
-                                keys + [k])
+            res, _ = _unmarshal(some_json.get(k), val_type, ref_cls_module, keys + [k])
             if res:
                 o[k] = res
         return o
 
     if nested_cls is not None:
-        raise Exception(f'{nested_cls} is not supported!')
+        raise Exception(f"{nested_cls} is not supported!")
 
     some_cls = to_real_class(ref_cls_module, some_cls)
     if isinstance(some_json, dict) and inspect.isclass(some_cls):
@@ -165,7 +198,9 @@ def _unmarshal(some_json: Dict[str, Any],
         annotations = {}
         annotations = some_cls.__init__.__annotations__
         if not annotations:
-            annotations = some_cls.__init__._sa_original_init.__annotations__  # For sqlalchemy
+            annotations = (
+                some_cls.__init__._sa_original_init.__annotations__
+            )  # For sqlalchemy
         for field in annotations.keys():
             target_cls = annotations[field]
             if some_json.get(field) is None:
@@ -174,8 +209,12 @@ def _unmarshal(some_json: Dict[str, Any],
             if target_cls == type(some_json.get(field)):
                 kwargs[field] = some_json.get(field)
             else:
-                res, _ = _unmarshal(some_json.get(field), target_cls,
-                                    some_cls.__module__, keys + [field])
+                res, _ = _unmarshal(
+                    some_json.get(field),
+                    target_cls,
+                    some_cls.__module__,
+                    keys + [field],
+                )
                 if res:
                     kwargs[field] = res
 
@@ -183,7 +222,7 @@ def _unmarshal(some_json: Dict[str, Any],
             res = some_cls(**kwargs)
             return res
         except Exception as e:
-            logger.exception(e, f'Field Stack: {keys}')
+            logger.exception(e, f"Field Stack: {keys}")
             return None
 
     if isinstance(some_json, (int, bool, float, str)):
@@ -195,14 +234,15 @@ def _unmarshal(some_json: Dict[str, Any],
             finally:
                 pass
         else:
-            logger.warning(f'Type miss match, field stack: {keys}')
+            logger.warning(f"Type miss match, field stack: {keys}")
     return None
 
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 def unmarshal(json_input: Dict[str, Any], cls: Type[T]) -> Tuple[T, Exception]:
+    process_dict_key_to_be_legal(json_input)
     res, e = _unmarshal(json_input, cls)
     return res, e
 
