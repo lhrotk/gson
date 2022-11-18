@@ -233,6 +233,13 @@ def _unmarshal(
                 return int(some_json)
             finally:
                 pass
+        elif some_cls == bool:
+            if isinstance(some_json, str):
+                if some_json.lower() == "true":
+                    return True
+                elif some_json.lower() == "false":
+                    return False
+            return bool(some_json)
         else:
             logger.warning(f"Type miss match, field stack: {keys}")
     return None

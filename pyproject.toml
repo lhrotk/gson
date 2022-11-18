@@ -4,12 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gson"
-version = "0.0.2"
+version = "0.0.3"
 authors = [
   { name="Cruise Li", email="lhrotk@gmail.com" },
 ]
 description = "Json Encode/Decoder in Golang Style"
-license = "MIT"
 requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Python :: 3",

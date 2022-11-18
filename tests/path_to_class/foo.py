@@ -1,20 +1,23 @@
 from typing import List
 
 
-class Teacher():
-    def __init__(self, age: int, name: str, discipline: str):
+class Teacher:
+    def __init__(self, age: int, name: str, discipline: str, married: bool = False):
         self.age = age
         self.name = name
+        self.married = married
         self.discipline = discipline
 
 
-class Student():
-    def __init__(self,
-                 name: str,
-                 age: int,
-                 school: 'School' = None,
-                 teacher: Teacher = None,
-                 room_mates: List['Student'] = None):
+class Student:
+    def __init__(
+        self,
+        name: str,
+        age: int,
+        school: "School" = None,
+        teacher: Teacher = None,
+        room_mates: List["Student"] = None,
+    ):
         self.name = name
         self.age = age
         self.school = school
@@ -23,7 +26,7 @@ class Student():
         return
 
 
-class School():
+class School:
     def __init__(self, address: str, zipcode: str):
         self.address = address
         self.zipcode = zipcode
