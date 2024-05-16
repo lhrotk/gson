@@ -1,8 +1,8 @@
 import unittest
 
 from gson.gmarshal import marshal, unmarshal_from_str
-from tests.path_to_class.foo import School, Student, Teacher
-from tests.path_to_other_class.bar import Group, Lesson
+from path_to_class.foo import School, Student, Teacher
+from path_to_other_class.bar import Group, Lesson
 
 
 class TestMarshalComplex(unittest.TestCase):

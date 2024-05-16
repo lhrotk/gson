@@ -14,7 +14,7 @@ from typing import (
     get_origin,
 )
 
-from decorators.safe_run import safe_run
+from .decorators.safe_run import safe_run
 
 logger = logging.getLogger(__name__)
 
@@ -142,6 +142,9 @@ def _unmarshal(
     Returns:
         (obj, exception)
     """
+    if some_cls == Any:
+        return some_json
+
     nested_cls = get_origin(some_cls)
     if nested_cls in (list, tuple, set):
         if not isinstance(some_json, list):

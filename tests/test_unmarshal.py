@@ -2,11 +2,11 @@ import unittest
 
 from gson.gmarshal import marshal, unmarshal_from_str
 
-from tests.path_to_class.foo import School, Student, Teacher
+from path_to_class.foo import School, Student, Teacher
 
 
 class TestMarshal(unittest.TestCase):
-    expected_json_str = '{"name": "Tom", "age": 18, "school": {"address": "18E Ave", "zipcode": "Q1W2E3"}, "teacher": {"age": 29, "name": "Bob", "discipline": "History"}, "room_mates": [{"name": "Shirley", "age": 18}]}'
+    expected_json_str = '{"name": "Tom", "age": 18, "school": {"address": "18E Ave", "zipcode": "Q1W2E3"}, "teacher": {"age": 29, "name": "Bob", "married": false, "discipline": "History"}, "room_mates": [{"name": "Shirley", "age": 18}]}'
 
     def test_marshal(self):
         tom = Student(

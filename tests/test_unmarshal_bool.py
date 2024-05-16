@@ -2,7 +2,7 @@ import unittest
 
 from gson.gmarshal import unmarshal_from_str
 
-from tests.path_to_class.foo import Teacher
+from path_to_class.foo import Teacher
 
 
 class TestMarshal(unittest.TestCase):
