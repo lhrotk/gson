@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from tests.path_to_class.foo import Student, Teacher
+from path_to_class.foo import Student, Teacher
 
 
 class Group():
